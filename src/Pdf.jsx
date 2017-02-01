@@ -33,7 +33,7 @@ class Pdf extends React.Component {
     binaryContent: React.PropTypes.shape({
       data: React.PropTypes.any,
     }),
-    file: React.PropTypes.any, // Could be File object or URL string.
+    file: React.PropTypes.any,
     loading: React.PropTypes.any,
     page: React.PropTypes.number,
     scale: React.PropTypes.number,
@@ -43,6 +43,7 @@ class Pdf extends React.Component {
     binaryToBase64: React.PropTypes.func,
     onDocumentComplete: React.PropTypes.func,
     onPageComplete: React.PropTypes.func,
+    onPageRender: React.PropTypes.func,
     className: React.PropTypes.string,
     style: React.PropTypes.object,
   };
@@ -50,6 +51,7 @@ class Pdf extends React.Component {
   static defaultProps = {
     page: 1,
     scale: 1.0,
+    onPageRender: undefined,
   };
 
   static onDocumentError(err) {
@@ -123,6 +125,7 @@ class Pdf extends React.Component {
     this.onGetPdfRaw = this.onGetPdfRaw.bind(this);
     this.onDocumentComplete = this.onDocumentComplete.bind(this);
     this.onPageComplete = this.onPageComplete.bind(this);
+    this.onPageRender = this.onPageRender.bind(this);
     this.getDocument = this.getDocument.bind(this);
   }
 
@@ -206,6 +209,14 @@ class Pdf extends React.Component {
     }
   }
 
+  onPageRender(page) {
+    const { onPageRender } = this.props;
+
+    if (typeof onPageRender === 'function') {
+      onPageRender(page.pageIndex + 1);
+    }
+  }
+
   getDocument(val) {
     if (this.documentPromise) {
       this.documentPromise.cancel();
@@ -252,6 +263,7 @@ class Pdf extends React.Component {
 
   renderPdf() {
     const { page } = this.state;
+
     if (page) {
       const { canvas } = this;
       const canvasContext = canvas.getContext('2d');
@@ -259,7 +271,7 @@ class Pdf extends React.Component {
       const viewport = page.getViewport(scale, rotate);
       canvas.height = viewport.height;
       canvas.width = viewport.width;
-      page.render({ canvasContext, viewport });
+      page.render({ canvasContext, viewport }).then(() => this.onPageRender(page));
     }
   }
 

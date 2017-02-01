@@ -1,0 +1,20 @@
+.App {
+  text-align: center;
+}
+
+.App-header {
+  background-color: #222;
+  padding: 20px;
+  color: white;
+}
+
+.App-header img {
+  height: 50px;
+  width: auto;
+}
+
+.App-intro {
+  margin: 20px auto;
+  display: inline-block;
+  border: 1px solid #ddd;
+}
