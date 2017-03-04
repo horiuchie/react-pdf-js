@@ -15,5 +15,5 @@
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },
-  "homepage": "https://altayaydemir.github.io/react-pdf-js"
+  "homepage": "https://putdotio.github.io/react-pdf-js"
 }
